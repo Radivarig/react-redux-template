@@ -1,0 +1,1 @@
+# .npmignore overrides .gitignore on `npm publish`, needed for "/dist"
