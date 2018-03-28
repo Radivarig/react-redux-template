@@ -1,5 +1,6 @@
 const packageJson = require("./package.json")
 const HtmlWebPackPlugin = require("html-webpack-plugin")
+const FlowWebpackPlugin = require('flow-webpack-plugin')
 
 const mainFile = "index.js"
 
@@ -43,6 +44,7 @@ module.exports = {
   },
 
   plugins: [
+    new FlowWebpackPlugin(),
     new HtmlWebPackPlugin({
       template: "./src/index.html",
     }),
