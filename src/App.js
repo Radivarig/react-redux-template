@@ -1,7 +1,7 @@
 // @flow
 import React from "react"
 import { composeWithDevTools } from "redux-devtools-extension"
-import { Route } from "react-router"
+import { Route, Switch } from "react-router"
 import { createStore, combineReducers, applyMiddleware } from "redux"
 import { Provider } from "react-redux"
 import createHistory from "history/createHashHistory"
@@ -39,10 +39,13 @@ const store = createStore (
 const Routes = hot (module) (() =>
   <div>
     <NavBar />
-    <Route exact path="/" component={Home} />
-    <Route exact path="/foo" component={Foo} />
-    <Route exact path="/bar" component={Bar} />
-    <Route exact path="/somecomponent" component={SomeComponent} />
+    <Switch>
+      <Route exact path="/" component={Home} />
+      <Route exact path="/foo" component={Foo} />
+      <Route exact path="/bar" component={Bar} />
+      <Route exact path="/somecomponent" component={SomeComponent} />
+      <Route path="*" component={NotFound} />
+    </Switch>
   </div>
 )
 
