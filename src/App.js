@@ -2,7 +2,7 @@
 import React from "react"
 import { composeWithDevTools } from "redux-devtools-extension"
 import { Route } from "react-router"
-import { createStore, applyMiddleware } from "redux"
+import { createStore, combineReducers, applyMiddleware } from "redux"
 import { Provider } from "react-redux"
 import createHistory from "history/createHashHistory"
 import { connectRouter, ConnectedRouter, routerMiddleware } from "connected-react-router"
@@ -25,9 +25,13 @@ const allMiddleware = applyMiddleware (
   routerMiddleware (history),
 )
 
+const allReducers = combineReducers ({
+  ...reducers,
+})
+
 const initialStore = {}
 const store = createStore (
-  connectRouter (history) (reducers),
+  connectRouter (history) (allReducers),
   initialStore,
   composeWithDevTools (allMiddleware),
 )
