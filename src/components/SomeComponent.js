@@ -1,9 +1,9 @@
 // @flow
 import React from "react"
-import styles from "./styles.js"
+import styles from "../styles.js"
 
 export default () => (
   <div style={styles.component.root}>
-    Component
+    Some component
   </div>
 )

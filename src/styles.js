@@ -1,7 +1,7 @@
 export default {
   "component": {
     "root": {
-      "color": "green",
+      "color": "purple",
     },
   },
 }

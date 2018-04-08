@@ -1,37 +1,51 @@
 // @flow
 import React from "react"
-import Component from "./Component.js"
-import * as r from "recompose"
+import { composeWithDevTools } from "redux-devtools-extension"
+import { Route } from "react-router"
+import { createStore, applyMiddleware } from "redux"
+import { Provider } from "react-redux"
+import createHistory from "history/createHashHistory"
+import { connectRouter, ConnectedRouter, routerMiddleware } from "connected-react-router"
+import { hot } from "react-hot-loader"
 
-const StatelessApp = ({ style, count }) => {
-  return (
-    <div style={style}>
-      {count}
-      <Component />
-    </div>
-  )
-}
+import reducers from "./reducers/"
 
-const withCounter = r.compose (
-  r.withState ("count", "setCount", 0),
-  r.lifecycle ({
-    componentDidMount () {
-      this.interval = setInterval (
-        () => this.props.setCount (this.props.count + 1),
-        200,
-      )
-    },
+import NavBar from "./containers/NavBar.js"
+import SomeComponent from "./components/SomeComponent.js"
 
-    componentWillUnmount () {
-      clearInterval (this.interval)
-    },
-  }),
+const Home = () => <div>Home</div>
+const Foo = () => <div>Foo</div>
+const Bar = () => <div>Bar</div>
+const NotFound = (props) => <div>Route not found: {props.location.pathname}</div>
+
+// eslint-disable-next-line no-shadow
+const history = createHistory ()
+
+const allMiddleware = applyMiddleware (
+  routerMiddleware (history),
 )
 
-const App = r.compose (
-  r.pure,
-  withCounter,
-  r.withProps ({ "style": { "color": "blue" } }),
-) (StatelessApp)
+const initialStore = {}
+const store = createStore (
+  connectRouter (history) (reducers),
+  initialStore,
+  composeWithDevTools (allMiddleware),
+)
 
-export default require ("react-hot-loader").hot (module) (App)
+const Routes = hot (module) (() =>
+  <div>
+    <NavBar />
+    <Route exact path="/" component={Home} />
+    <Route exact path="/foo" component={Foo} />
+    <Route exact path="/bar" component={Bar} />
+    <Route exact path="/somecomponent" component={SomeComponent} />
+  </div>
+)
+
+export default () => (
+  <Provider store={store}>
+    <ConnectedRouter history={history}>
+      <Routes />
+    </ConnectedRouter>
+  </Provider>
+)
