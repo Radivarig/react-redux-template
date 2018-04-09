@@ -1,4 +1,3 @@
-// @flow
 import React from "react"
 import { composeWithDevTools } from "redux-devtools-extension"
 import { Route, Switch } from "react-router"
@@ -7,8 +6,6 @@ import { Provider } from "react-redux"
 import createHistory from "history/createHashHistory"
 import { connectRouter, ConnectedRouter, routerMiddleware } from "connected-react-router"
 import { hot } from "react-hot-loader"
-
-import reducers from "./reducers/"
 
 import NavBar from "./containers/NavBar.js"
 import SomeComponent from "./components/SomeComponent.js"
@@ -25,13 +22,17 @@ const allMiddleware = applyMiddleware (
   routerMiddleware (history),
 )
 
-const allReducers = combineReducers ({
-  ...reducers,
-})
+const getReducers = () => {
+  const reducers = require ("./reducers/").default
+  const allReducers = combineReducers ({
+    ...reducers,
+  })
+  return connectRouter (history) (allReducers)
+}
 
 const initialStore = {}
 const store = createStore (
-  connectRouter (history) (allReducers),
+  getReducers (),
   initialStore,
   composeWithDevTools (allMiddleware),
 )
@@ -48,6 +49,12 @@ const Routes = hot (module) (() =>
     </Switch>
   </div>
 )
+
+if (module.hot) {
+  module.hot.accept ("./reducers/", () => {
+    store.replaceReducer (getReducers ())
+  })
+}
 
 export default () => (
   <Provider store={store}>
